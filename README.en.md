@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../logo.svg" alt="Punch Desk logo" width="96" height="96" />
+  <img src="./logo.svg" alt="Punch Desk logo" width="96" height="96" />
 </p>
 
 <h1 align="center">Punch Desk</h1>

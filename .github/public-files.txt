@@ -11,6 +11,7 @@ README.md
 SECURITY.md
 client.js
 cordis.patch.yml
+docs/brand/logo-96.png
 docs/brand/logo-96.svg
 docs/mockup/previews/desk-dashboard.png
 docs/mockup/previews/desk-distil.png

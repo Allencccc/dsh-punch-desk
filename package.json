@@ -18,6 +18,8 @@
   "keywords": [
     "dsh",
     "deepseek",
+    "deepseek-harness",
+    "dsh-plugin",
     "punch-desk",
     "prompt",
     "session",

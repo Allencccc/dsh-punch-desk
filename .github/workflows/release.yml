@@ -1,0 +1,75 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22.19.0'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: git fetch origin main:refs/remotes/origin/main
+      - run: git merge-base --is-ancestor "$GITHUB_SHA" refs/remotes/origin/main
+      - run: npm run build
+      - run: git diff --exit-code -- client.js
+      - run: node --check client.js
+      - run: test "v$(node -p 'require("./package.json").version')" = "${GITHUB_REF_NAME}"
+      - run: mkdir -p .release && npm pack --pack-destination .release
+      - run: node scripts/check-tarball.mjs .release/*.tgz
+      - run: sha256sum .release/*.tgz > .release/SHA256SUMS
+      - run: node scripts/extract-release-notes.mjs "${GITHUB_REF_NAME#v}" > .release/RELEASE_NOTES.md
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-assets
+          path: .release/*
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-assets
+          path: .release
+      - name: Refuse duplicate release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release exists; inspect it and follow the recovery procedure" >&2
+            exit 1
+          fi
+      - name: Create draft, attach assets, then publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PRERELEASE=""
+          case "$GITHUB_REF_NAME" in *-*) PRERELEASE="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" .release/*.tgz .release/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" --verify-tag --draft $PRERELEASE \
+            --notes-file .release/RELEASE_NOTES.md
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false

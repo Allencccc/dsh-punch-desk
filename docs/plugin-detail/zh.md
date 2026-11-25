@@ -84,16 +84,24 @@ DeepSeek Harness 的会话手账插件。它把 Prompt 当作推进工程落地�
 
 要求 DeepSeek Harness **`>= 0.2.2-rc.1`**（Desktop 或 Web 版均可）。
 
-本插件目前不发布 npm 包，安装的是本地离线包或本地目录：
+本插件已发布到 npm，也可以使用离线包或本地目录安装：
 
-**方式 A · 插件页（推荐）**
+**方式 A · npm**
+
+```bash
+dsh plugin --profile <profile名> add dsh-punch-desk@1.0.0 --registry=https://registry.npmjs.org/
+```
+
+如果 pnpm 默认 registry 不是 npmjs，保留 `--registry`；DSH 会原样转发给 pnpm。
+
+**方式 B · 插件页（离线包）**
 
 1. 拿到 `dsh-punch-desk-<版本>.tgz`（用仓库里的 `npm pack` 生成，或直接用别人分享的离线包）；
 2. DSH 左侧栏「**插件**」→「**添加插件**」；
 3. 输入 `.tgz` 的**绝对路径**（也可以填解压后的插件目录绝对路径），点安装；
 4. 确认 Punch Desk 组合包已启用，**硬刷新浏览器**（Cmd+R / Ctrl+R）。
 
-**方式 B · 命令行**
+**方式 C · 命令行（离线包）**
 
 ```bash
 dsh plugin --profile <profile名> add /绝对路径/dsh-punch-desk-<版本>.tgz
@@ -101,7 +109,7 @@ dsh plugin --profile <profile名> add /绝对路径/dsh-punch-desk-<版本>.tgz
 
 装完在「插件」页选中并启用 Punch Desk；若 DSH 没有 HMR，重启客户端。
 
-**方式 C · 从源码安装（想改代码时，需要 Node.js `>= 22.19.0`）**
+**方式 D · 从源码安装（想改代码时，需要 Node.js `>= 22.19.0`）**
 
 ```bash
 git clone https://github.com/Allencccc/dsh-punch-desk.git
@@ -111,7 +119,7 @@ npm install && npm run build
 
 然后在「插件」页用「添加插件」填该目录的**绝对路径**（本地目录会以 link 方式接入；改代码后重新构建并重启 DSH）。
 
-- **更新**：先移除旧版再安装新包；源码目录方式直接重新构建/重启。
+- **更新**：先移除旧版再安装新包；npm 安装可直接重新执行 `dsh plugin ... add dsh-punch-desk@<版本>`；源码目录方式直接重新构建/重启。
 - **卸载**：「插件」页移除 Punch Desk。你的手账数据不会被删除。
 - **数据位置**：`~/.dsh/storages/punch_desk.json`；文档写回备份在 `~/.dsh/storages/punch_desk/backups/`。
 

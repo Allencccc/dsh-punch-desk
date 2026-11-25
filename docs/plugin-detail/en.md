@@ -84,16 +84,24 @@ All data stays local. The plugin uploads nothing and needs no model API key of i
 
 Requires DeepSeek Harness **`>= 0.2.2-rc.1`** (Desktop or Web).
 
-The plugin is not published to npm yet; install a local tarball or directory:
+The plugin is published to npm; a local tarball or directory also works:
 
-**Option A · Plugins page (recommended)**
+**Option A · npm**
+
+```bash
+dsh plugin --profile <profile> add dsh-punch-desk@1.0.0 --registry=https://registry.npmjs.org/
+```
+
+If pnpm's registry is not npmjs, keep `--registry`; DSH forwards the arguments to pnpm.
+
+**Option B · Plugins page (offline tarball)**
 
 1. Get `dsh-punch-desk-<version>.tgz` (`npm pack` from the repo, or a tarball shared with you);
 2. Open **Plugins** in the DSH sidebar → **Add plugin**;
 3. Enter the **absolute path** of the `.tgz` (an extracted plugin directory also works) and install;
 4. Make sure the Punch Desk bundle is enabled, then **hard refresh** the browser (Cmd+R / Ctrl+R).
 
-**Option B · CLI**
+**Option C · CLI (offline tarball)**
 
 ```bash
 dsh plugin --profile <profile> add /absolute/path/dsh-punch-desk-<version>.tgz
@@ -101,7 +109,7 @@ dsh plugin --profile <profile> add /absolute/path/dsh-punch-desk-<version>.tgz
 
 Then select and enable Punch Desk on the Plugins page; restart DSH if HMR is off.
 
-**Option C · From source (when developing; needs Node.js `>= 22.19.0`)**
+**Option D · From source (when developing; needs Node.js `>= 22.19.0`)**
 
 ```bash
 git clone https://github.com/Allencccc/dsh-punch-desk.git
@@ -111,7 +119,7 @@ npm install && npm run build
 
 Add the **absolute directory** on the Plugins page (a local directory is linked; rebuild and restart after code changes).
 
-- **Update**: remove the old bundle, install the new one; source installs can rebuild and restart.
+- **Update**: remove the old bundle, install the new one; for npm installs, rerun `dsh plugin ... add dsh-punch-desk@<version>`; source installs can rebuild and restart.
 - **Uninstall**: remove Punch Desk on the Plugins page. Your notes are not deleted.
 - **Data location**: `~/.dsh/storages/punch_desk.json`, with documentation-writeback backups under `~/.dsh/storages/punch_desk/backups/`.
 

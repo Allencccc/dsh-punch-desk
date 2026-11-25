@@ -47,7 +47,7 @@ jobs:
           retention-days: 1
 
   publish:
-    needs: verify
+    needs: [verify, publish-npm]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -78,7 +78,7 @@ jobs:
   publish-npm:
     # Requires npm trusted publishing configured for:
     # repository Allencccc/dsh-punch-desk, workflow release.yml, environment empty.
-    needs: publish
+    needs: verify
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -74,3 +74,53 @@ jobs:
             --repo "$GITHUB_REPOSITORY" --verify-tag --draft $PRERELEASE \
             --notes-file .release/RELEASE_NOTES.md
           gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false
+
+  publish-npm:
+    # Requires npm trusted publishing configured for:
+    # repository Allencccc/dsh-punch-desk, workflow release.yml, environment empty.
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org/'
+      - name: Use latest npm for trusted publishing
+        run: npm install -g npm@latest
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-assets
+          path: .release
+      - name: Prepare publishable package
+        run: |
+          set -euo pipefail
+          rm -rf .npm-package
+          mkdir -p .npm-package
+          tar -xzf .release/*.tgz -C .npm-package
+          node - <<'NODE'
+          const fs = require('fs')
+          const p = '.npm-package/package/package.json'
+          const manifest = JSON.parse(fs.readFileSync(p, 'utf8'))
+          manifest.private = false
+          fs.writeFileSync(p, JSON.stringify(manifest, null, 2) + '\n')
+          NODE
+          node -e "const p=require('./.npm-package/package/package.json'); console.log(p.name + '@' + p.version + ' private=' + p.private)"
+      - name: Publish to npmjs
+        run: |
+          set -euo pipefail
+          NAME="$(node -p 'require("./.npm-package/package/package.json").name')"
+          VERSION="$(node -p 'require("./.npm-package/package/package.json").version')"
+          test "v$VERSION" = "$GITHUB_REF_NAME"
+          case "$GITHUB_REF_NAME" in
+            *-*) TAG=next ;;
+            *) TAG=latest ;;
+          esac
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already published; skipping"
+            exit 0
+          fi
+          cd .npm-package/package
+          npm publish --provenance --access public --tag "$TAG"

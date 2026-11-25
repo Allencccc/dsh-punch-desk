@@ -35,6 +35,21 @@ node --check client.js
 
 Open an issue with steps to reproduce, your DSH version, operating system, and expected versus actual behavior. For security issues, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
+## Releases and npm
+
+Maintainers publish tagged releases from the public mirror. The `release` workflow creates the GitHub Release and then publishes the same package to npmjs using OIDC trusted publishing; no long-lived `NPM_TOKEN` is stored in the repository.
+
+Before the automated npm job can succeed, configure the package on npmjs:
+
+- Package: `dsh-punch-desk` → **Settings → Trusted publishing**
+- Provider: **GitHub Actions**
+- Owner: `Allencccc`
+- Repository: `dsh-punch-desk`
+- Workflow: `release.yml`
+- Environment: leave empty
+
+Documentation-only changes are synced to `main` without creating a new tag or release. Published npm versions are immutable: a new npm release needs a new version and tag.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the MIT License.

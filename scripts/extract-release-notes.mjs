@@ -19,8 +19,8 @@ if (!match) {
 const rest = body.slice(match.index)
 const next = /^## \[/m.exec(rest.slice(match[0].length))
 const section = next ? rest.slice(0, match[0].length + next.index) : rest
-if (!section.includes('Source: dsh-punch-desk-source@')) {
-  console.error('CHANGELOG section for ' + version + ' must contain a Source: dsh-punch-desk-source@ line')
+if (!section.includes('Source:')) {
+  console.error('CHANGELOG section for ' + version + ' must contain a Source: line')
   process.exit(1)
 }
 

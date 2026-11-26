@@ -89,7 +89,7 @@ DeepSeek Harness 的会话手账插件。它把 Prompt 当作推进工程落地�
 **方式 A · npm**
 
 ```bash
-dsh plugin --profile <profile名> add dsh-punch-desk@1.0.0 --registry=https://registry.npmjs.org/
+dsh plugin --profile <profile名> add dsh-punch-desk@1.0.1 --registry=https://registry.npmjs.org/
 ```
 
 如果 pnpm 默认 registry 不是 npmjs，保留 `--registry`；DSH 会原样转发给 pnpm。

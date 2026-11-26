@@ -6,6 +6,15 @@ All notable changes to Punch Desk are documented here. Public releases use the v
 
 - No unreleased changes yet.
 
+## [1.0.1] - 2026-11-26
+
+Source: v0.1.15
+
+- Published `dsh-punch-desk@1.0.1` through the OIDC trusted-publishing release workflow, validating the npm Trusted Publisher configuration.
+- Added npm discovery keywords: `dsh`, `deepseek-harness`, and `dsh-plugin`.
+- Added npm installation instructions to the README and plugin-detail mirrors.
+- No functional changes.
+
 ## [1.0.0] - 2026-11-25
 
 Source: v0.1.14

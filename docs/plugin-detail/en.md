@@ -89,7 +89,7 @@ The plugin is published to npm; a local tarball or directory also works:
 **Option A · npm**
 
 ```bash
-dsh plugin --profile <profile> add dsh-punch-desk@1.0.0 --registry=https://registry.npmjs.org/
+dsh plugin --profile <profile> add dsh-punch-desk@1.0.1 --registry=https://registry.npmjs.org/
 ```
 
 If pnpm's registry is not npmjs, keep `--registry`; DSH forwards the arguments to pnpm.
